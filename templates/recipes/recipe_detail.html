@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block content %}
+<a href="{% url 'recipes:recipes' %}">Back</a>
+
+<p>Title: {{object.title}}</p>
+<p>Description: {{object.description}}</p>
+<p>Created: {{object.created_at}}</p>
+
+{% endblock %}

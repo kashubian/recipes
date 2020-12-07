@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h3>Recipes</h3>
+<ul class="list-group">
+    {% for recipe in object_list %}
+    <li class="list-group-item"><a href="{% url 'recipes:recipe' recipe.slug %}">{{ recipe.title }}</a></li>
+    {% endfor %}
+</ul>
+
+{% endblock %}
