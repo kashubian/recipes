@@ -13,6 +13,21 @@
   </head>
   <body>
     <div class="content container">
+        
+      <nav class="navbar navbar-expand-lg navbar-light bg-light">
+          <ul class="navbar-nav">
+            
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'recipes:recipes' %}">Recipes</a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'recipes:add_recipe' %}">Add recipe</a>
+            </li>
+
+          </ul>
+      </nav>
+
         {% block content %}
         {% endblock %}
     </div>
