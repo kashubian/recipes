@@ -1,10 +1,10 @@
 {% extends "base.html" %}
 
 {% block content %}
-<a href="{% url 'recipes:recipes' %}">Back</a>
-
 <p>Title: {{object.title}}</p>
 <p>Description: {{object.description}}</p>
 <p>Created: {{object.created_at}}</p>
-
+<a href="{% url 'recipes:update_recipe' recipe.slug %}", class="btn btn-secondary", role="button">Update</a>
+<a href="{% url 'recipes:delete_recipe' recipe.slug %}", class="btn btn-warning", role="button">Delete</a>
+<a href="{% url 'recipes:recipes' %}", class="btn btn-primary", role="button">Back</a>
 {% endblock %}
