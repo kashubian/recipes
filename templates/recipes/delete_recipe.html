@@ -7,6 +7,6 @@
     {% csrf_token %}
     <p>Are you sure?</p>
     <button class="btn btn-danger", type="submit">Delete recipe</button>
-    <a href="{% url 'recipes:recipe' recipe.slug %}", class="btn btn-primary", role="button">Back</a>
+    <a href="{% url 'recipes:recipe' recipe.pk %}", class="btn btn-primary", role="button">Back</a>
 </form>
 {% endblock %}

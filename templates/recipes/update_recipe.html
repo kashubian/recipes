@@ -7,6 +7,6 @@
     {% csrf_token %}
     {{ form|crispy }}
     <button class="btn btn-success", type="submit">Update</button>
-    <a href="{% url 'recipes:recipe' recipe.slug %}", class="btn btn-primary", role="button">Back</a>
+    <a href="{% url 'recipes:recipe' recipe.pk %}", class="btn btn-primary", role="button">Back</a>
 </form>
 {% endblock %}
