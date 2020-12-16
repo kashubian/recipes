@@ -17,3 +17,11 @@ class Recipe(Timestamp):
         self.slug = slugify(self.title)
         super(Recipe, self).save(*args, **kwargs)
         
+
+class Ingredient(Timestamp):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, unique=True)
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name

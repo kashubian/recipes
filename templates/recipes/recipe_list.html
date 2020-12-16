@@ -4,9 +4,9 @@
 
 <ul class="list-group">
     {% for recipe in object_list %}
-    <li class="list-group-item"><a href="{% url 'recipes:recipe' recipe.slug %}">{{ recipe.title }}</a></li>
+    <li class="list-group-item"><a href="{% url 'recipes:recipe' recipe.pk %}">{{ recipe.title }}</a></li>
     {% empty %}
-    <p>No avaiable recipes.</p>
+    <p>No available recipes.</p>
     {% endfor %}
 </ul>
 

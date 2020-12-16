@@ -1,4 +1,7 @@
 from django.contrib import admin
-from .models import Recipe
+from . import models
 
-admin.site.register(Recipe)
+admin.site.register([
+    models.Recipe,
+    models.Ingredient
+])
