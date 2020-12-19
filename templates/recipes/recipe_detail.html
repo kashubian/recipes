@@ -8,9 +8,15 @@
 <p>List of ingredients:</p>
 {% for ingredient in ingredients_list %}
 <li>{{ ingredient.name }}</li>
+
+{% empty %}
+<p>No available ingredients</p>
+
 {% endfor %}
 
 <a href="{% url 'recipes:update_recipe' recipe.pk %}", class="btn btn-secondary", role="button">Update</a>
 <a href="{% url 'recipes:delete_recipe' recipe.pk %}", class="btn btn-warning", role="button">Delete</a>
+<a href="{% url 'recipes:add_ingredient' recipe.pk %}", class="btn btn-success", role="button">Add Ingredient</a>
 <a href="{% url 'recipes:recipes' %}", class="btn btn-primary", role="button">Back</a>
+
 {% endblock %}
