@@ -8,36 +8,22 @@
 
 <p>List of ingredients:</p>
 {% for ingredient in ingredients_list %}
+    
+    <li>
+        <a href="{% url 'recipes:update_ingredient' ingredient.pk %}">
+            {{ ingredient.amount|default_if_none:"" }}
+            {{ ingredient.unit|default_if_none:"" }}
+            {{ ingredient.name }}
+        </a>
+        <form method="post" action="{% url 'recipes:delete_ingredient' ingredient.pk %}">
+            {% csrf_token %}
+            <button class="btn btn-danger" type="submit">Delete</button>
+        </form> 
+    </li>
 
-    {% if ingredient.amount == None and ingredient.unit == None %}
-        <li>
-            <a href="{% url 'recipes:update_ingredient' ingredient.pk %}">{{ ingredient.name }}</a>
-            <form method="post" action="{% url 'recipes:delete_ingredient' ingredient.pk %}">{% csrf_token %}<input type="submit" value="delete"></form> 
-        </li>
+{% empty %}
 
-    {% elif ingredient.unit == None %}
-        <li>
-            <a href="{% url 'recipes:update_ingredient' ingredient.pk %}">{{ ingredient.amount }} {{ ingredient.name }}</a>
-            <form method="post" action="{% url 'recipes:delete_ingredient' ingredient.pk %}">{% csrf_token %}<input type="submit" value="delete"></form> 
-        </li>
-
-    {% elif ingredient.amount == None %}
-        <li>
-            <a href="{% url 'recipes:update_ingredient' ingredient.pk %}">{{ ingredient.unit }} {{ ingredient.name }}</a>
-            <form method="post" action="{% url 'recipes:delete_ingredient' ingredient.pk %}">{% csrf_token %}<input type="submit" value="delete"></form> 
-        </li>
-
-    {% else %}
-        <li>
-            <a href="{% url 'recipes:update_ingredient' ingredient.pk %}">{{ ingredient.amount }} {{ ingredient.unit }} {{ ingredient.name }}</a>
-            <form method="post" action="{% url 'recipes:delete_ingredient' ingredient.pk %}">{% csrf_token %}<input type="submit" value="delete"></form> 
-        </li>
-
-    {% endif %}
-
-    {% empty %}
-
-        <p>No available ingredients</p>
+    <p>No available ingredients</p>
 
 {% endfor %}
 

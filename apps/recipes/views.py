@@ -71,7 +71,14 @@ class AddIngredientView(generic.edit.CreateView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse_lazy('recipes:recipe', kwargs={'pk': self.object.recipe_id})
+
+        if 'add_another' in self.request.POST:
+            url = reverse_lazy('recipes:add_ingredient', kwargs={'pk': self.object.recipe_id})
+
+        else:
+            url = reverse_lazy('recipes:recipe', kwargs={'pk': self.object.recipe_id})
+
+        return url 
 
 
 class UpdateIngredientView(generic.edit.UpdateView):
