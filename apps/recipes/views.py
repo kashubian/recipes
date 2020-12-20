@@ -10,11 +10,13 @@ from .forms import RecipeForm
 class RecipesView(generic.ListView):
 
     model = Recipe
+    context_object_name = 'recipes'
 
 
 class RecipeView(generic.DetailView):
 
     model = Recipe
+    context_object_name = 'recipe'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -51,7 +53,6 @@ class DeleteRecipeView(generic.edit.DeleteView):
 
 class AddIngredientView(generic.edit.CreateView):
 
-    
     model = Ingredient
     fields = [
         'name',
@@ -71,4 +72,22 @@ class AddIngredientView(generic.edit.CreateView):
 
     def get_success_url(self):
         return reverse_lazy('recipes:recipe', args=(self.kwargs['pk'],))
-        
+
+
+class UpdateIngredientView(generic.edit.UpdateView):
+
+    model = Ingredient
+    fields = [
+        'name',
+        'amount',
+        'unit'
+    ]
+    template_name = 'recipes/update_ingredient.html'
+    success_url = '/'
+
+
+class DeleteIngredientView(generic.edit.DeleteView):
+
+    model = Ingredient
+    success_url  = '/'
+    

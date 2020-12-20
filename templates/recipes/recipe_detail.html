@@ -1,30 +1,43 @@
 {% extends "base.html" %}
 
 {% block content %}
-<p>Title: {{object.title}}</p>
-<p>Preparation: {{object.preparation}}</p>
-<p>Created: {{object.created_at}}</p>
+<p>Title: {{recipe.title}}</p>
+<p>Preparation: {{recipe.preparation}}</p>
+<p>Created: {{recipe.created_at}}</p>
+<p>Updated: {{recipe.updated_at}}</p>
 
 <p>List of ingredients:</p>
 {% for ingredient in ingredients_list %}
 
     {% if ingredient.amount == None and ingredient.unit == None %}
-        <li>{{ ingredient.name }}</li>
+        <li>
+            <a href="{% url 'recipes:update_ingredient' ingredient.pk %}">{{ ingredient.name }}</a>
+            <form method="post" action="{% url 'recipes:delete_ingredient' ingredient.pk %}">{% csrf_token %}<input type="submit" value="delete"></form> 
+        </li>
 
     {% elif ingredient.unit == None %}
-        <li>{{ ingredient.amount }} {{ ingredient.name }}</li>
+        <li>
+            <a href="{% url 'recipes:update_ingredient' ingredient.pk %}">{{ ingredient.amount }} {{ ingredient.name }}</a>
+            <form method="post" action="{% url 'recipes:delete_ingredient' ingredient.pk %}">{% csrf_token %}<input type="submit" value="delete"></form> 
+        </li>
 
     {% elif ingredient.amount == None %}
-        <li>{{ ingredient.unit }} {{ ingredient.name }}</li>
+        <li>
+            <a href="{% url 'recipes:update_ingredient' ingredient.pk %}">{{ ingredient.unit }} {{ ingredient.name }}</a>
+            <form method="post" action="{% url 'recipes:delete_ingredient' ingredient.pk %}">{% csrf_token %}<input type="submit" value="delete"></form> 
+        </li>
 
     {% else %}
-        <li>{{ ingredient.amount }} {{ ingredient.unit }} {{ ingredient.name }}</li>
+        <li>
+            <a href="{% url 'recipes:update_ingredient' ingredient.pk %}">{{ ingredient.amount }} {{ ingredient.unit }} {{ ingredient.name }}</a>
+            <form method="post" action="{% url 'recipes:delete_ingredient' ingredient.pk %}">{% csrf_token %}<input type="submit" value="delete"></form> 
+        </li>
 
     {% endif %}
 
     {% empty %}
 
-    <p>No available ingredients</p>
+        <p>No available ingredients</p>
 
 {% endfor %}
 
