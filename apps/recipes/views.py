@@ -71,7 +71,7 @@ class AddIngredientView(generic.edit.CreateView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse_lazy('recipes:recipe', args=(self.kwargs['pk'],))
+        return reverse_lazy('recipes:recipe', kwargs={'pk': self.object.recipe_id})
 
 
 class UpdateIngredientView(generic.edit.UpdateView):
@@ -83,11 +83,14 @@ class UpdateIngredientView(generic.edit.UpdateView):
         'unit'
     ]
     template_name = 'recipes/update_ingredient.html'
-    success_url = '/'
+
+    def get_success_url(self):
+        return reverse_lazy('recipes:recipe', kwargs={'pk': self.object.recipe_id})
 
 
 class DeleteIngredientView(generic.edit.DeleteView):
 
     model = Ingredient
-    success_url  = '/'
-    
+
+    def get_success_url(self):
+        return reverse_lazy('recipes:recipe', kwargs={'pk': self.object.recipe_id})
