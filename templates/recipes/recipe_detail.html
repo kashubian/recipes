@@ -2,15 +2,29 @@
 
 {% block content %}
 <p>Title: {{object.title}}</p>
-<p>Description: {{object.description}}</p>
+<p>Preparation: {{object.preparation}}</p>
 <p>Created: {{object.created_at}}</p>
 
 <p>List of ingredients:</p>
 {% for ingredient in ingredients_list %}
-<li>{{ ingredient.name }}</li>
 
-{% empty %}
-<p>No available ingredients</p>
+    {% if ingredient.amount == None and ingredient.unit == None %}
+        <li>{{ ingredient.name }}</li>
+
+    {% elif ingredient.unit == None %}
+        <li>{{ ingredient.amount }} {{ ingredient.name }}</li>
+
+    {% elif ingredient.amount == None %}
+        <li>{{ ingredient.unit }} {{ ingredient.name }}</li>
+
+    {% else %}
+        <li>{{ ingredient.amount }} {{ ingredient.unit }} {{ ingredient.name }}</li>
+
+    {% endif %}
+
+    {% empty %}
+
+    <p>No available ingredients</p>
 
 {% endfor %}
 

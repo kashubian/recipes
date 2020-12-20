@@ -3,5 +3,6 @@ from . import models
 
 admin.site.register([
     models.Recipe,
-    models.Ingredient
+    models.Ingredient,
+    models.Unit
 ])

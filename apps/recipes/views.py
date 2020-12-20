@@ -34,7 +34,7 @@ class UpdateRecipeView(generic.edit.UpdateView):
     model = Recipe
     fields = [
         'title',
-        'description'
+        'preparation'
     ]
     template_name = 'recipes/update_recipe.html'
 
@@ -54,7 +54,9 @@ class AddIngredientView(generic.edit.CreateView):
     
     model = Ingredient
     fields = [
-        'name'
+        'name',
+        'amount',
+        'unit'
     ]
     success_url = '/'
     template_name = 'recipes/add_ingredient.html'
