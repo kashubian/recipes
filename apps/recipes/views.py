@@ -29,6 +29,9 @@ class AddRecipeView(generic.edit.CreateView):
     form_class = RecipeForm
     success_url = '/'
     template_name = 'recipes/add_recipe.html'
+
+    def get_success_url(self):
+        return reverse_lazy('recipes:recipe', kwargs={'pk' : self.object.pk})
     
 
 class UpdateRecipeView(generic.edit.UpdateView):
