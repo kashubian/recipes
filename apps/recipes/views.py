@@ -10,11 +10,13 @@ from .forms import RecipeForm
 class RecipesView(generic.ListView):
 
     model = Recipe
+    context_object_name = 'recipes'
 
 
 class RecipeView(generic.DetailView):
 
     model = Recipe
+    context_object_name = 'recipe'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -27,6 +29,9 @@ class AddRecipeView(generic.edit.CreateView):
     form_class = RecipeForm
     success_url = '/'
     template_name = 'recipes/add_recipe.html'
+
+    def get_success_url(self):
+        return reverse_lazy('recipes:recipe', kwargs={'pk' : self.object.pk})
     
 
 class UpdateRecipeView(generic.edit.UpdateView):
@@ -51,7 +56,6 @@ class DeleteRecipeView(generic.edit.DeleteView):
 
 class AddIngredientView(generic.edit.CreateView):
 
-    
     model = Ingredient
     fields = [
         'name',
@@ -70,5 +74,33 @@ class AddIngredientView(generic.edit.CreateView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse_lazy('recipes:recipe', args=(self.kwargs['pk'],))
-        
+
+        if 'add_another' in self.request.POST:
+            url = reverse_lazy('recipes:add_ingredient', kwargs={'pk': self.object.recipe_id})
+
+        else:
+            url = reverse_lazy('recipes:recipe', kwargs={'pk': self.object.recipe_id})
+
+        return url 
+
+
+class UpdateIngredientView(generic.edit.UpdateView):
+
+    model = Ingredient
+    fields = [
+        'name',
+        'amount',
+        'unit'
+    ]
+    template_name = 'recipes/update_ingredient.html'
+
+    def get_success_url(self):
+        return reverse_lazy('recipes:recipe', kwargs={'pk': self.object.recipe_id})
+
+
+class DeleteIngredientView(generic.edit.DeleteView):
+
+    model = Ingredient
+
+    def get_success_url(self):
+        return reverse_lazy('recipes:recipe', kwargs={'pk': self.object.recipe_id})
