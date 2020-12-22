@@ -3,7 +3,7 @@ from django.views import generic
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 
-from .models import Recipe, Ingredient
+from .models import Recipe, Ingredient, Step
 from .forms import RecipeForm
 
 
@@ -20,7 +20,8 @@ class RecipeView(generic.DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['ingredients_list'] = Ingredient.objects.filter(recipe=self.object.pk)        
+        context['ingredients_list'] = Ingredient.objects.filter(recipe=self.object.pk)
+        context['steps_list'] = Step.objects.filter(recipe=self.object.pk)
         return context
         
 
@@ -39,7 +40,7 @@ class UpdateRecipeView(generic.edit.UpdateView):
     model = Recipe
     fields = [
         'title',
-        'preparation'
+        'description'
     ]
     template_name = 'recipes/update_recipe.html'
 
