@@ -105,3 +105,23 @@ class DeleteIngredientView(generic.edit.DeleteView):
 
     def get_success_url(self):
         return reverse_lazy('recipes:recipe', kwargs={'pk': self.object.recipe_id})
+
+
+class AddStepView(generic.edit.CreateView):
+
+    model = Step
+    fields = [
+        'instruction'
+    ]
+    template_name = 'recipes/add_step.html'
+    
+    def dispatch(self, request, *args, **kwargs):
+        self.recipe = get_object_or_404(Recipe, pk=self.kwargs['pk'])
+        return super().dispatch(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        form.instance.recipe = self.recipe
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy('recipes:recipe', kwargs={'pk': self.object.recipe_id})
