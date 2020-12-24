@@ -125,3 +125,16 @@ class AddStepView(generic.edit.CreateView):
 
     def get_success_url(self):
         return reverse_lazy('recipes:recipe', kwargs={'pk': self.object.recipe_id})
+
+
+class UpdateStepView(generic.edit.UpdateView):
+
+    model = Step
+    fields = [
+        'instruction'
+    ]
+    template_name = 'recipes/update_step.html'
+
+    def get_success_url(self):
+        return reverse_lazy('recipes:recipe', kwargs={'pk': self.object.recipe_id})
+        

@@ -31,7 +31,9 @@
 {% for step in steps_list %}
 
     <li>
-        {{ step.instruction }}
+        <a href="{% url 'recipes:update_step' step.pk %}">
+            {{ step.instruction }}
+        </a>
     </li>
 
 {% empty %}
