@@ -12,5 +12,6 @@ urlpatterns = [
     path('<uuid:pk>/update-ingredient', views.UpdateIngredientView.as_view(), name='update_ingredient'),
     path('<uuid:pk>/delete-ingredient', views.DeleteIngredientView.as_view(), name='delete_ingredient'),
     path('<uuid:pk>/add-step', views.AddStepView.as_view(), name='add_step'),
-    path('<uuid:pk>/update-step', views.UpdateStepView.as_view(), name='update_step')
+    path('<uuid:pk>/update-step', views.UpdateStepView.as_view(), name='update_step'),
+    path('<uuid:pk>/delete-step', views.DeleteStepView.as_view(), name='delete_step')
 ]

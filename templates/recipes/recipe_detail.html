@@ -34,6 +34,10 @@
         <a href="{% url 'recipes:update_step' step.pk %}">
             {{ step.instruction }}
         </a>
+        <form method="post" action="{% url 'recipes:delete_step' step.pk %}">
+            {% csrf_token %}
+            <button class="btn btn-danger" type="submit">Delete</button>
+        </form>
     </li>
 
 {% empty %}

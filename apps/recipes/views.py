@@ -137,4 +137,12 @@ class UpdateStepView(generic.edit.UpdateView):
 
     def get_success_url(self):
         return reverse_lazy('recipes:recipe', kwargs={'pk': self.object.recipe_id})
+
+
+class DeleteStepView(generic.edit.DeleteView):
+
+    model = Step
+    
+    def get_success_url(self):
+        return reverse_lazy('recipes:recipe', kwargs={'pk': self.object.recipe_id})
         
