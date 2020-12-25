@@ -8,7 +8,7 @@ class Recipe(Timestamp):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, unique=True)
     title = models.CharField(max_length=100, unique=True)
     slug = models.SlugField(blank=True, null=True, unique=True)
-    preparation = models.TextField()
+    description = models.TextField(blank=True)
 
     def __str__(self):
         return self.title
@@ -16,7 +16,16 @@ class Recipe(Timestamp):
     def save(self, *args, **kwargs):
         self.slug = slugify(self.title)
         super(Recipe, self).save(*args, **kwargs)
-        
+
+
+class Step(Timestamp):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, unique=True)
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
+    instruction = models.TextField()
+
+    def __str__(self):
+        return self.recipe.title
+
 
 class Ingredient(Timestamp):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, unique=True)

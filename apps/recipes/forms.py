@@ -7,6 +7,6 @@ class RecipeForm(forms.ModelForm):
         model = Recipe
         fields = [
             'title',
-            'preparation'
+            'description'
         ]
         

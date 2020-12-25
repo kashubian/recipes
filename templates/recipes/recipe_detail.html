@@ -2,7 +2,11 @@
 
 {% block content %}
 <p>Title: {{recipe.title}}</p>
-<p>Preparation: {{recipe.preparation}}</p>
+
+{% if recipe.description %}
+    <p>Description: {{recipe.description}}</p>
+{% endif %}
+    
 <p>Created: {{recipe.created_at}}</p>
 <p>Updated: {{recipe.updated_at}}</p>
 
@@ -27,9 +31,29 @@
 
 {% endfor %}
 
+<p>Steps:</p>
+{% for step in steps_list %}
+
+    <li>
+        <a href="{% url 'recipes:update_step' step.pk %}">
+            {{ step.instruction }}
+        </a>
+        <form method="post" action="{% url 'recipes:delete_step' step.pk %}">
+            {% csrf_token %}
+            <button class="btn btn-danger" type="submit">Delete</button>
+        </form>
+    </li>
+
+{% empty %}
+
+    <p>No available steps</p>    
+
+{% endfor %}
+
 <a href="{% url 'recipes:update_recipe' recipe.pk %}", class="btn btn-secondary", role="button">Update</a>
 <a href="{% url 'recipes:delete_recipe' recipe.pk %}", class="btn btn-warning", role="button">Delete</a>
 <a href="{% url 'recipes:add_ingredient' recipe.pk %}", class="btn btn-success", role="button">Add Ingredient</a>
+<a href="{% url 'recipes:add_step' recipe.pk %}", class="btn btn-success", role="button">Add Step</a>
 <a href="{{ request.META.HTTP_REFERER }}" class="btn btn-primary" role="button">Back</a>
 
 {% endblock %}
