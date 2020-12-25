@@ -2,7 +2,11 @@
 
 {% block content %}
 <p>Title: {{recipe.title}}</p>
-<p>Description: {{recipe.description}}</p>
+
+{% if recipe.description %}
+    <p>Description: {{recipe.description}}</p>
+{% endif %}
+    
 <p>Created: {{recipe.created_at}}</p>
 <p>Updated: {{recipe.updated_at}}</p>
 
