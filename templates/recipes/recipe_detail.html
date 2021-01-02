@@ -8,7 +8,7 @@
         <p class="card-body">{{recipe.description}}</p>
         {% endif %}
     </div>
-</div>
+
 
 <div class="row">
     <div class="col-sm-6">
@@ -65,10 +65,13 @@
         </div>
     </div>
 
-<a href="{% url 'recipes:update_recipe' recipe.pk %}", class="btn btn-secondary", role="button">Update</a>
-<a href="{% url 'recipes:delete_recipe' recipe.pk %}", class="btn btn-warning", role="button">Delete</a>
-<a href="{% url 'recipes:add_ingredient' recipe.pk %}", class="btn btn-success", role="button">Add Ingredient</a>
-<a href="{% url 'recipes:add_step' recipe.pk %}", class="btn btn-success", role="button">Add Step</a>
-<a href="{{ request.META.HTTP_REFERER }}" class="btn btn-primary" role="button">Back</a>
+    <div class="card-body">
+        <a href="{% url 'recipes:update_recipe' recipe.pk %}", class="btn btn-secondary", role="button">Update</a>
+        <a href="{% url 'recipes:delete_recipe' recipe.pk %}", class="btn btn-warning", role="button">Delete</a>
+        <a href="{% url 'recipes:add_ingredient' recipe.pk %}", class="btn btn-success", role="button">Add Ingredient</a>
+        <a href="{% url 'recipes:add_step' recipe.pk %}", class="btn btn-success", role="button">Add Step</a>
+        <a href="{{ request.META.HTTP_REFERER }}" class="btn btn-primary" role="button">Back</a>
+    </div>
 
+</div>
 {% endblock %}
