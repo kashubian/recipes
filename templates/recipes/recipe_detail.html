@@ -1,54 +1,69 @@
 {% extends "base.html" %}
-
 {% block content %}
-<p>Title: {{recipe.title}}</p>
 
-{% if recipe.description %}
-    <p>Description: {{recipe.description}}</p>
-{% endif %}
-    
-<p>Created: {{recipe.created_at}}</p>
-<p>Updated: {{recipe.updated_at}}</p>
+<div class="card">
+    <div class="card-header">
+        <p class="card-title">{{recipe.title}}</p>
+        {% if recipe.description %}
+        <p class="card-body">{{recipe.description}}</p>
+        {% endif %}
+    </div>
+</div>
 
-<p>List of ingredients:</p>
-{% for ingredient in ingredients_list %}
-    
-    <li>
-        <a href="{% url 'recipes:update_ingredient' ingredient.pk %}">
-            {{ ingredient.amount|default_if_none:"" }}
-            {{ ingredient.unit|default_if_none:"" }}
-            {{ ingredient.name }}
-        </a>
-        <form method="post" action="{% url 'recipes:delete_ingredient' ingredient.pk %}">
-            {% csrf_token %}
-            <button class="btn btn-danger" type="submit">Delete</button>
-        </form> 
-    </li>
+<div class="row">
+    <div class="col-sm-6">
+        <div class="card">
+            <div class="card-body">
+                <strong>Ingredients:</strong>
+                {% for ingredient in ingredients_list %}
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <a href="{% url 'recipes:update_ingredient' ingredient.pk %}">
+                            {{ ingredient.name }}
+                        </a>
+                        <span class="badge badge-secondary badge-pill">
+                            {{ ingredient.amount|default_if_none:"" }}
+                            {{ ingredient.unit|default_if_none:"" }}
+                        </span>
+                <!-- <form method="post" action="{% url 'recipes:delete_ingredient' ingredient.pk %}">
+                {% csrf_token %}
+                <button class="btn btn-danger" type="submit">Delete</button>
+                </form>  -->
+                    </li>
+                </ul>
+            
+                {% empty %}
+                <p>No available ingredients</p>
+            
+                {% endfor %}
+            </div>
+        </div>
+    </div>
 
-{% empty %}
-
-    <p>No available ingredients</p>
-
-{% endfor %}
-
-<p>Steps:</p>
-{% for step in steps_list %}
-
-    <li>
-        <a href="{% url 'recipes:update_step' step.pk %}">
-            {{ step.instruction }}
-        </a>
-        <form method="post" action="{% url 'recipes:delete_step' step.pk %}">
-            {% csrf_token %}
-            <button class="btn btn-danger" type="submit">Delete</button>
-        </form>
-    </li>
-
-{% empty %}
-
-    <p>No available steps</p>    
-
-{% endfor %}
+    <div class="col-sm-6">
+        <div class="card">
+            <div class="card-body">
+                <strong>Steps:</strong>
+                    {% for step in steps_list %}
+                    <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <a href="{% url 'recipes:update_step' step.pk %}">
+                            {{ step.instruction }}
+                        </a>
+                        <!-- <form method="post" action="{% url 'recipes:delete_step' step.pk %}">
+                            {% csrf_token %}
+                            <button class="btn btn-danger" type="submit">Delete</button>
+                        </form> -->
+                    </li>
+                </ul>
+        
+                {% empty %}
+                    <p>No available steps</p>    
+            
+                {% endfor %}
+            </div>
+        </div>
+    </div>
 
 <a href="{% url 'recipes:update_recipe' recipe.pk %}", class="btn btn-secondary", role="button">Update</a>
 <a href="{% url 'recipes:delete_recipe' recipe.pk %}", class="btn btn-warning", role="button">Delete</a>
