@@ -20,11 +20,26 @@
             <li class="nav-item">
               <a class="nav-link" href="{% url 'recipes:recipes' %}">Recipes</a>
             </li>
+            
+            {% if not user.is_authenticated %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'accounts:login' %}">Login</a>
+            </li>
 
+            {% else %}
             <li class="nav-item">
               <a class="nav-link" href="{% url 'recipes:add_recipe' %}">Add recipe</a>
             </li>
+            
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'accounts:logout' %}">Logout</a>
+            </li>
 
+            <li class="navbar-text">
+              Hi {{ request.user.username }}
+            </li>
+            
+            {% endif %}
           </ul>
       </nav>
 

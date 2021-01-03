@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.views import generic
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .models import Recipe, Ingredient, Step
 from .forms import RecipeForm
@@ -25,7 +26,7 @@ class RecipeView(generic.DetailView):
         return context
         
 
-class AddRecipeView(generic.edit.CreateView):
+class AddRecipeView(LoginRequiredMixin, generic.edit.CreateView):
 
     form_class = RecipeForm
     success_url = '/'
@@ -35,7 +36,7 @@ class AddRecipeView(generic.edit.CreateView):
         return reverse_lazy('recipes:recipe', kwargs={'pk' : self.object.pk})
     
 
-class UpdateRecipeView(generic.edit.UpdateView):
+class UpdateRecipeView(LoginRequiredMixin, generic.edit.UpdateView):
 
     model = Recipe
     fields = [
@@ -48,14 +49,14 @@ class UpdateRecipeView(generic.edit.UpdateView):
         return reverse_lazy('recipes:recipe', args=(self.kwargs['pk'],))
 
 
-class DeleteRecipeView(generic.edit.DeleteView):
+class DeleteRecipeView(LoginRequiredMixin, generic.edit.DeleteView):
 
     model = Recipe
     success_url = '/'
     template_name = 'recipes/delete_recipe.html'
 
 
-class AddIngredientView(generic.edit.CreateView):
+class AddIngredientView(LoginRequiredMixin, generic.edit.CreateView):
 
     model = Ingredient
     fields = [
@@ -85,7 +86,7 @@ class AddIngredientView(generic.edit.CreateView):
         return url 
 
 
-class UpdateIngredientView(generic.edit.UpdateView):
+class UpdateIngredientView(LoginRequiredMixin, generic.edit.UpdateView):
 
     model = Ingredient
     fields = [
@@ -99,7 +100,7 @@ class UpdateIngredientView(generic.edit.UpdateView):
         return reverse_lazy('recipes:recipe', kwargs={'pk': self.object.recipe_id})
 
 
-class DeleteIngredientView(generic.edit.DeleteView):
+class DeleteIngredientView(LoginRequiredMixin, generic.edit.DeleteView):
 
     model = Ingredient
 
@@ -107,7 +108,7 @@ class DeleteIngredientView(generic.edit.DeleteView):
         return reverse_lazy('recipes:recipe', kwargs={'pk': self.object.recipe_id})
 
 
-class AddStepView(generic.edit.CreateView):
+class AddStepView(LoginRequiredMixin, generic.edit.CreateView):
 
     model = Step
     fields = [
@@ -134,7 +135,7 @@ class AddStepView(generic.edit.CreateView):
         return url
 
 
-class UpdateStepView(generic.edit.UpdateView):
+class UpdateStepView(LoginRequiredMixin, generic.edit.UpdateView):
 
     model = Step
     fields = [
@@ -146,7 +147,7 @@ class UpdateStepView(generic.edit.UpdateView):
         return reverse_lazy('recipes:recipe', kwargs={'pk': self.object.recipe_id})
 
 
-class DeleteStepView(generic.edit.DeleteView):
+class DeleteStepView(LoginRequiredMixin, generic.edit.DeleteView):
 
     model = Step
     

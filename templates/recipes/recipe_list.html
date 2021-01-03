@@ -1,7 +1,9 @@
 {% extends "base.html" %}
 
 {% block content %}
-
+  
+  {% if recipes %}
+    
     {%  for recipe in recipes  %}
         {% if forloop.counter0|divisibleby:3 %} <div class="row text-center"> {%  endif %}
           <div class="col-md-4">
@@ -21,5 +23,10 @@
           </div>
     {%  if forloop.counter|divisibleby:3 or forloop.last %}</div><hr>{%  endif %}
     {%  endfor %}
+  
+  {% else %}
+    <strong>No available recipes</strong>
+
+  {% endif %}
 
 {% endblock %}
