@@ -32,6 +32,10 @@ class AddRecipeView(LoginRequiredMixin, generic.edit.CreateView):
     success_url = '/'
     template_name = 'recipes/add_recipe.html'
 
+    def form_valid(self, form):
+        form.instance.owner = self.request.user
+        return super(AddRecipeView, self).form_valid(form)
+
     def get_success_url(self):
         return reverse_lazy('recipes:recipe', kwargs={'pk' : self.object.pk})
     
