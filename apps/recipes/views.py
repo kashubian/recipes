@@ -3,6 +3,7 @@ from django.views import generic
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import HttpResponseForbidden
 
 from .models import Recipe, Ingredient, Step
 from .forms import RecipeForm
@@ -38,7 +39,7 @@ class AddRecipeView(LoginRequiredMixin, generic.edit.CreateView):
 
     def get_success_url(self):
         return reverse_lazy('recipes:recipe', kwargs={'pk' : self.object.pk})
-    
+
 
 class UpdateRecipeView(LoginRequiredMixin, generic.edit.UpdateView):
 
@@ -49,6 +50,13 @@ class UpdateRecipeView(LoginRequiredMixin, generic.edit.UpdateView):
     ]
     template_name = 'recipes/update_recipe.html'
 
+    def dispatch(self, request, *args, **kwargs):
+        """ Making sure that only owners can update recipe """
+        obj = self.get_object()
+        if obj.owner != self.request.user:
+            return HttpResponseForbidden()
+        return super().dispatch(request, *args, **kwargs)
+
     def get_success_url(self):
         return reverse_lazy('recipes:recipe', args=(self.kwargs['pk'],))
 
@@ -58,6 +66,13 @@ class DeleteRecipeView(LoginRequiredMixin, generic.edit.DeleteView):
     model = Recipe
     success_url = '/'
     template_name = 'recipes/delete_recipe.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        """ Making sure that only owners can update recipe """
+        obj = self.get_object()
+        if obj.owner != self.request.user:
+            return HttpResponseForbidden()
+        return super().dispatch(request, *args, **kwargs)
 
 
 class AddIngredientView(LoginRequiredMixin, generic.edit.CreateView):
@@ -73,6 +88,10 @@ class AddIngredientView(LoginRequiredMixin, generic.edit.CreateView):
 
     def dispatch(self, request, *args, **kwargs):
         self.recipe = get_object_or_404(Recipe, pk=self.kwargs['pk'])
+
+        if self.recipe.owner != self.request.user:
+            return HttpResponseForbidden()
+
         return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
@@ -122,6 +141,10 @@ class AddStepView(LoginRequiredMixin, generic.edit.CreateView):
     
     def dispatch(self, request, *args, **kwargs):
         self.recipe = get_object_or_404(Recipe, pk=self.kwargs['pk'])
+
+        if self.recipe.owner != self.request.user:
+            return HttpResponseForbidden()
+        
         return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
