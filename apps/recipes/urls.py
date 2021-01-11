@@ -13,5 +13,6 @@ urlpatterns = [
     path('<uuid:pk>/delete-ingredient', views.DeleteIngredientView.as_view(), name='delete_ingredient'),
     path('<uuid:pk>/add-step', views.AddStepView.as_view(), name='add_step'),
     path('<uuid:pk>/update-step', views.UpdateStepView.as_view(), name='update_step'),
-    path('<uuid:pk>/delete-step', views.DeleteStepView.as_view(), name='delete_step')
+    path('<uuid:pk>/delete-step', views.DeleteStepView.as_view(), name='delete_step'),
+    path('not-verified-user/', views.not_verified_user, name='not_verified_user')
 ]

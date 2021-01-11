@@ -1,9 +1,9 @@
-from django.shortcuts import render
+from django.shortcuts import render, reverse
 from django.views import generic
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpResponseForbidden
+from django.http import HttpResponseForbidden, HttpResponseRedirect
 
 from .models import Recipe, Ingredient, Step
 from .forms import RecipeForm
@@ -34,13 +34,20 @@ class AddRecipeView(LoginRequiredMixin, generic.edit.CreateView):
     template_name = 'recipes/add_recipe.html'
 
     def form_valid(self, form):
-        form.instance.owner = self.request.user
-        return super(AddRecipeView, self).form_valid(form)
+        if self.request.user.is_verified:
+            form.instance.owner = self.request.user
+            return super(AddRecipeView, self).form_valid(form)
+        else:
+            return HttpResponseRedirect(reverse('recipes:not_verified_user'))
 
     def get_success_url(self):
         return reverse_lazy('recipes:recipe', kwargs={'pk' : self.object.pk})
 
 
+def not_verified_user(request):
+    return render(request, "recipes/not_verified_user.html")
+
+    
 class UpdateRecipeView(LoginRequiredMixin, generic.edit.UpdateView):
 
     model = Recipe
