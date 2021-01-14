@@ -1,7 +1,9 @@
-from django.shortcuts import render
+from django.shortcuts import render, reverse
 from django.views import generic
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.http import HttpResponseForbidden, HttpResponseRedirect
 
 from .models import Recipe, Ingredient, Step
 from .forms import RecipeForm
@@ -25,17 +27,28 @@ class RecipeView(generic.DetailView):
         return context
         
 
-class AddRecipeView(generic.edit.CreateView):
+class AddRecipeView(LoginRequiredMixin, generic.edit.CreateView):
 
     form_class = RecipeForm
     success_url = '/'
     template_name = 'recipes/add_recipe.html'
 
+    def form_valid(self, form):
+        if self.request.user.is_verified:
+            form.instance.owner = self.request.user
+            return super(AddRecipeView, self).form_valid(form)
+        else:
+            return HttpResponseRedirect(reverse('recipes:not_verified_user'))
+
     def get_success_url(self):
         return reverse_lazy('recipes:recipe', kwargs={'pk' : self.object.pk})
-    
 
-class UpdateRecipeView(generic.edit.UpdateView):
+
+def not_verified_user(request):
+    return render(request, "recipes/not_verified_user.html")
+
+    
+class UpdateRecipeView(LoginRequiredMixin, generic.edit.UpdateView):
 
     model = Recipe
     fields = [
@@ -44,18 +57,32 @@ class UpdateRecipeView(generic.edit.UpdateView):
     ]
     template_name = 'recipes/update_recipe.html'
 
+    def dispatch(self, request, *args, **kwargs):
+        """ Making sure that only owners can update recipe """
+        obj = self.get_object()
+        if obj.owner != self.request.user:
+            return HttpResponseForbidden()
+        return super().dispatch(request, *args, **kwargs)
+
     def get_success_url(self):
         return reverse_lazy('recipes:recipe', args=(self.kwargs['pk'],))
 
 
-class DeleteRecipeView(generic.edit.DeleteView):
+class DeleteRecipeView(LoginRequiredMixin, generic.edit.DeleteView):
 
     model = Recipe
     success_url = '/'
     template_name = 'recipes/delete_recipe.html'
 
+    def dispatch(self, request, *args, **kwargs):
+        """ Making sure that only owners can update recipe """
+        obj = self.get_object()
+        if obj.owner != self.request.user:
+            return HttpResponseForbidden()
+        return super().dispatch(request, *args, **kwargs)
 
-class AddIngredientView(generic.edit.CreateView):
+
+class AddIngredientView(LoginRequiredMixin, generic.edit.CreateView):
 
     model = Ingredient
     fields = [
@@ -68,6 +95,10 @@ class AddIngredientView(generic.edit.CreateView):
 
     def dispatch(self, request, *args, **kwargs):
         self.recipe = get_object_or_404(Recipe, pk=self.kwargs['pk'])
+
+        if self.recipe.owner != self.request.user:
+            return HttpResponseForbidden()
+
         return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
@@ -85,7 +116,7 @@ class AddIngredientView(generic.edit.CreateView):
         return url 
 
 
-class UpdateIngredientView(generic.edit.UpdateView):
+class UpdateIngredientView(LoginRequiredMixin, generic.edit.UpdateView):
 
     model = Ingredient
     fields = [
@@ -99,7 +130,7 @@ class UpdateIngredientView(generic.edit.UpdateView):
         return reverse_lazy('recipes:recipe', kwargs={'pk': self.object.recipe_id})
 
 
-class DeleteIngredientView(generic.edit.DeleteView):
+class DeleteIngredientView(LoginRequiredMixin, generic.edit.DeleteView):
 
     model = Ingredient
 
@@ -107,7 +138,7 @@ class DeleteIngredientView(generic.edit.DeleteView):
         return reverse_lazy('recipes:recipe', kwargs={'pk': self.object.recipe_id})
 
 
-class AddStepView(generic.edit.CreateView):
+class AddStepView(LoginRequiredMixin, generic.edit.CreateView):
 
     model = Step
     fields = [
@@ -117,6 +148,10 @@ class AddStepView(generic.edit.CreateView):
     
     def dispatch(self, request, *args, **kwargs):
         self.recipe = get_object_or_404(Recipe, pk=self.kwargs['pk'])
+
+        if self.recipe.owner != self.request.user:
+            return HttpResponseForbidden()
+        
         return super().dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
@@ -134,7 +169,7 @@ class AddStepView(generic.edit.CreateView):
         return url
 
 
-class UpdateStepView(generic.edit.UpdateView):
+class UpdateStepView(LoginRequiredMixin, generic.edit.UpdateView):
 
     model = Step
     fields = [
@@ -146,7 +181,7 @@ class UpdateStepView(generic.edit.UpdateView):
         return reverse_lazy('recipes:recipe', kwargs={'pk': self.object.recipe_id})
 
 
-class DeleteStepView(generic.edit.DeleteView):
+class DeleteStepView(LoginRequiredMixin, generic.edit.DeleteView):
 
     model = Step
     

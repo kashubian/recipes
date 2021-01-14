@@ -1,7 +1,9 @@
 {% extends "base.html" %}
 
 {% block content %}
-
+  
+  {% if recipes %}
+    
     {%  for recipe in recipes  %}
         {% if forloop.counter0|divisibleby:3 %} <div class="row text-center"> {%  endif %}
           <div class="col-md-4">
@@ -12,7 +14,7 @@
                   <div class="card-content">
                       <br>
                       {% comment %} <h4>Project {{ forloop.counter }}</h4> {% endcomment %}
-                      <h3>{{ recipe.title }}</a></h3>
+                      <h3>{{ recipe.title }} added by <strong>{{ recipe.owner }}</strong></h3>
                       <hr>
                         <p>{{recipe.description|truncatechars:250}}</p>
                       <br>
@@ -21,5 +23,10 @@
           </div>
     {%  if forloop.counter|divisibleby:3 or forloop.last %}</div><hr>{%  endif %}
     {%  endfor %}
+  
+  {% else %}
+    <strong>No available recipes</strong>
+
+  {% endif %}
 
 {% endblock %}
