@@ -1,4 +1,4 @@
-from django.shortcuts import render, reverse
+from django.shortcuts import render, reverse, redirect
 from django.views import generic
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
@@ -47,6 +47,18 @@ class AddRecipeView(LoginRequiredMixin, generic.edit.CreateView):
 def not_verified_user(request):
     return render(request, "recipes/not_verified_user.html")
 
+
+def add_to_favorite(request, pk):
+    recipe = get_object_or_404(Recipe, pk=pk)
+
+    if recipe.favorite.filter(id=request.user.id).exists():
+        recipe.favorite.remove(request.user)
+        return redirect('/')
+
+    else:
+        recipe.favorite.add(request.user)
+        return redirect('/')
+    
     
 class UpdateRecipeView(LoginRequiredMixin, generic.edit.UpdateView):
 

@@ -11,6 +11,7 @@ class Recipe(Timestamp):
     title = models.CharField(max_length=100, unique=True)
     slug = models.SlugField(blank=True, null=True, unique=True)
     description = models.TextField(blank=True)
+    favorite = models.ManyToManyField(CustomUser, related_name='favorite', blank=True)
 
     def __str__(self):
         return self.title
