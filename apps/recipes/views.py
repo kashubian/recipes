@@ -15,6 +15,17 @@ class RecipesView(generic.ListView):
     context_object_name = 'recipes'
 
 
+class FavoriteRecipes(generic.ListView):
+
+    model = Recipe
+    template_name = 'recipes/favorite_recipes.html'
+    context_object_name = 'favorite_recipes'
+
+    def get_queryset(self):
+        favorite_recipes = Recipe.objects.filter(favorite__id=self.request.user.id)
+        return favorite_recipes
+
+
 class RecipeView(generic.DetailView):
 
     model = Recipe
