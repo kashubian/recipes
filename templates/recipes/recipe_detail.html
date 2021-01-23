@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
+{% load static %}
 
 <div class="card">
     <div class="card-header">
@@ -7,6 +8,16 @@
         {% if recipe.description %}
         <p class="card-body">{{recipe.description}}</p>
         {% endif %}
+        
+        <a href="{% url 'recipes:add_to_favorite' recipe.pk %}">  
+            {% if is_favorite %}
+            <img src="{% static 'static/favorite.png' %}" alt="Remove from favorites" height="50" width="50">
+            
+            {% else %}
+            <img src="{% static 'static/non-favorite.png' %}" alt="Add to favorites" height="50" width="50">
+            
+            {% endif %}
+        </a>
     </div>
 
 

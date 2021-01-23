@@ -19,11 +19,21 @@ class RecipeView(generic.DetailView):
 
     model = Recipe
     context_object_name = 'recipe'
+    
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        global is_favorite
+        is_favorite = False
+        if self.object.favorite.filter(id=request.user.id).exists():
+            is_favorite = True
+        context = self.get_context_data(object=self.object)
+        return self.render_to_response(context)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['ingredients_list'] = Ingredient.objects.filter(recipe=self.object.pk)
         context['steps_list'] = Step.objects.filter(recipe=self.object.pk)
+        context['is_favorite'] = is_favorite
         return context
         
 
@@ -53,13 +63,14 @@ def add_to_favorite(request, pk):
 
     if recipe.favorite.filter(id=request.user.id).exists():
         recipe.favorite.remove(request.user)
-        return redirect('/')
+        # return redirect(request.META['HTTP_REFERER'])
 
     else:
         recipe.favorite.add(request.user)
-        return redirect('/')
     
+    return redirect(request.META['HTTP_REFERER'])
     
+
 class UpdateRecipeView(LoginRequiredMixin, generic.edit.UpdateView):
 
     model = Recipe
