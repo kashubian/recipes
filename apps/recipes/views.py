@@ -70,17 +70,19 @@ def not_verified_user(request):
 
 
 def add_to_favorite(request, pk):
-    recipe = get_object_or_404(Recipe, pk=pk)
+    if request.user.is_authenticated:
+        recipe = get_object_or_404(Recipe, pk=pk)
 
-    if recipe.favorite.filter(id=request.user.id).exists():
-        recipe.favorite.remove(request.user)
-        # return redirect(request.META['HTTP_REFERER'])
+        if recipe.favorite.filter(id=request.user.id).exists():
+            recipe.favorite.remove(request.user)
 
+        else:
+            recipe.favorite.add(request.user)
+        
+        return redirect(request.META['HTTP_REFERER'])
+    
     else:
-        recipe.favorite.add(request.user)
-    
-    return redirect(request.META['HTTP_REFERER'])
-    
+        return HttpResponseForbidden()
 
 class UpdateRecipeView(LoginRequiredMixin, generic.edit.UpdateView):
 

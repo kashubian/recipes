@@ -9,6 +9,7 @@
         <p class="card-body">{{recipe.description}}</p>
         {% endif %}
         
+        {% if user.is_authenticated %}
         <a href="{% url 'recipes:add_to_favorite' recipe.pk %}">  
             {% if is_favorite %}
             <img src="{% static 'static/favorite.png' %}" alt="Remove from favorites" height="50" width="50">
@@ -18,8 +19,9 @@
             
             {% endif %}
         </a>
-    </div>
+        {% endif %}
 
+    </div>
 
 <div class="row">
     <div class="col-sm-6">
