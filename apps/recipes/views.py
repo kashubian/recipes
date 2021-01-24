@@ -1,4 +1,4 @@
-from django.shortcuts import render, reverse
+from django.shortcuts import render, reverse, redirect
 from django.views import generic
 from django.shortcuts import get_object_or_404
 from django.urls import reverse_lazy
@@ -15,15 +15,36 @@ class RecipesView(generic.ListView):
     context_object_name = 'recipes'
 
 
+class FavoriteRecipes(generic.ListView):
+
+    model = Recipe
+    template_name = 'recipes/favorite_recipes.html'
+    context_object_name = 'favorite_recipes'
+
+    def get_queryset(self):
+        favorite_recipes = Recipe.objects.filter(favorite__id=self.request.user.id)
+        return favorite_recipes
+
+
 class RecipeView(generic.DetailView):
 
     model = Recipe
     context_object_name = 'recipe'
+    
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        global is_favorite
+        is_favorite = False
+        if self.object.favorite.filter(id=request.user.id).exists():
+            is_favorite = True
+        context = self.get_context_data(object=self.object)
+        return self.render_to_response(context)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['ingredients_list'] = Ingredient.objects.filter(recipe=self.object.pk)
         context['steps_list'] = Step.objects.filter(recipe=self.object.pk)
+        context['is_favorite'] = is_favorite
         return context
         
 
@@ -47,7 +68,20 @@ class AddRecipeView(LoginRequiredMixin, generic.edit.CreateView):
 def not_verified_user(request):
     return render(request, "recipes/not_verified_user.html")
 
+
+def add_to_favorite(request, pk):
+    recipe = get_object_or_404(Recipe, pk=pk)
+
+    if recipe.favorite.filter(id=request.user.id).exists():
+        recipe.favorite.remove(request.user)
+        # return redirect(request.META['HTTP_REFERER'])
+
+    else:
+        recipe.favorite.add(request.user)
     
+    return redirect(request.META['HTTP_REFERER'])
+    
+
 class UpdateRecipeView(LoginRequiredMixin, generic.edit.UpdateView):
 
     model = Recipe

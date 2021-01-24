@@ -34,6 +34,10 @@
 
             {% else %}
             <li class="nav-item">
+              <a class="nav-link" href="{% url 'recipes:favorite_recipes' %}">My favorites</a>
+            </li>
+
+            <li class="nav-item">
               <a class="nav-link" href="{% url 'recipes:add_recipe' %}">Add recipe</a>
             </li>
             

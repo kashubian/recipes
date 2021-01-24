@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+  
+  {% if favorite_recipes %}
+    
+    {%  for recipe in favorite_recipes  %}
+        {% if forloop.counter0|divisibleby:3 %} <div class="row text-center"> {%  endif %}
+          <div class="col-md-4">
+              <div class="card">
+                  <a href="{% url 'recipes:recipe' recipe.pk %}">
+                    <img src="https://via.placeholder.com/350x150">
+                  </a>
+                  <div class="card-content">
+                      <br>
+                      {% comment %} <h4>Project {{ forloop.counter }}</h4> {% endcomment %}
+                      <h3>{{ recipe.title }} added by <strong>{{ recipe.owner }}</strong></h3>
+                      <hr>
+                        <p>{{recipe.description|truncatechars:250}}</p>
+                      <br>
+                  </div>
+              </div>
+          </div>
+    {%  if forloop.counter|divisibleby:3 or forloop.last %}</div><hr>{%  endif %}
+    {%  endfor %}
+  
+  {% else %}
+    <strong>No available recipes</strong>
+
+  {% endif %}
+
+{% endblock %}
