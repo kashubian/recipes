@@ -48,3 +48,12 @@ class Unit(Timestamp):
     def __str__(self):
         return self.name
     
+
+class Comment(Timestamp):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, unique=True)
+    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
+    author = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    content = models.TextField(max_length=255)
+
+    def __str__(self):
+        return self.recipe.title + " " + self.author.username

@@ -5,7 +5,7 @@ from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseForbidden, HttpResponseRedirect
 
-from .models import Recipe, Ingredient, Step
+from .models import Recipe, Ingredient, Step, Comment
 from .forms import RecipeForm
 
 
@@ -45,6 +45,7 @@ class RecipeView(generic.DetailView):
         context['ingredients_list'] = Ingredient.objects.filter(recipe=self.object.pk)
         context['steps_list'] = Step.objects.filter(recipe=self.object.pk)
         context['is_favorite'] = is_favorite
+        context['comments_list'] = Comment.objects.filter(recipe=self.object.pk)
         return context
         
 
