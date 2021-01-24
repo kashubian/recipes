@@ -6,7 +6,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseForbidden, HttpResponseRedirect
 
 from .models import Recipe, Ingredient, Step, Comment
-from .forms import RecipeForm
+from .forms import RecipeForm, CommentForm
 
 
 class RecipesView(generic.ListView):
@@ -26,11 +26,33 @@ class FavoriteRecipes(generic.ListView):
         return favorite_recipes
 
 
-class RecipeView(generic.DetailView):
+class AddCommentView(generic.CreateView):
+
+    model = Comment
+    
+    def dispatch(self, request, *args, **kwargs):
+        self.recipe = get_object_or_404(Recipe, pk=self.kwargs['pk'])
+        return super().dispatch(request, *args, **kwargs)
+    
+    def form_valid(self, form):
+        if self.request.user.is_verified:
+            form.instance.author = self.request.user
+            form.instance.recipe_id = self.recipe.id
+            return super(AddCommentView, self).form_valid(form)
+        else:
+            return HttpResponseRedirect(reverse('recipes:not_verified_user'))
+    
+    def get_success_url(self):
+        return reverse_lazy('recipes:recipe', kwargs={'pk' : self.recipe.id})
+
+
+class RecipeView(AddCommentView, generic.DetailView):
 
     model = Recipe
     context_object_name = 'recipe'
-    
+    form_class = CommentForm
+    template_name = 'recipes/recipe_detail.html'
+
     def get(self, request, *args, **kwargs):
         self.object = self.get_object()
         global is_favorite
@@ -47,7 +69,11 @@ class RecipeView(generic.DetailView):
         context['is_favorite'] = is_favorite
         context['comments_list'] = Comment.objects.filter(recipe=self.object.pk)
         return context
-        
+    
+    def post(self, request, *args, **kwargs):
+        return AddCommentView.post(self, request, *args, **kwargs)
+
+
 
 class AddRecipeView(LoginRequiredMixin, generic.edit.CreateView):
 
