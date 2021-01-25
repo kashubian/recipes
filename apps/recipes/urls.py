@@ -16,5 +16,7 @@ urlpatterns = [
     path('<uuid:pk>/delete-step', views.DeleteStepView.as_view(), name='delete_step'),
     path('not-verified-user/', views.not_verified_user, name='not_verified_user'),
     path('<uuid:pk>/add-to-favorite/', views.add_to_favorite, name='add_to_favorite'),
-    path('favorite-recipes/', views.FavoriteRecipes.as_view(), name='favorite_recipes')
+    path('favorite-recipes/', views.FavoriteRecipes.as_view(), name='favorite_recipes'),
+    path('<uuid:recipe_id>/comments/<uuid:pk>/update/', views.UpdateCommentView.as_view(), name='update_comment'),
+    path('<uuid:recipe_id>/comments/<uuid:pk>/delete/', views.DeleteCommentView.as_view(), name='delete_comment')
 ]

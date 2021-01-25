@@ -46,6 +46,40 @@ class AddCommentView(generic.CreateView):
         return reverse_lazy('recipes:recipe', kwargs={'pk' : self.recipe.id})
 
 
+class UpdateCommentView(LoginRequiredMixin, generic.edit.UpdateView):
+
+    model = Comment
+    form_class = CommentForm
+    template_name = 'recipes/update_comment.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        obj = self.get_object()
+
+        if self.request.user != obj.author:
+            return HttpResponseForbidden()
+
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_success_url(self):
+        return reverse_lazy('recipes:recipe', kwargs={'pk': self.object.recipe_id})
+
+
+class DeleteCommentView(LoginRequiredMixin, generic.edit.DeleteView):
+
+    model = Comment
+
+    def dispatch(self, request, *args, **kwargs):
+        obj = self.get_object()
+
+        if self.request.user != obj.author:
+            return HttpResponseForbidden()
+
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_success_url(self):
+        return reverse_lazy('recipes:recipe', kwargs={'pk': self.object.recipe_id})
+
+
 class RecipeView(AddCommentView, generic.DetailView):
 
     model = Recipe
