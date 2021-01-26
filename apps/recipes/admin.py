@@ -5,5 +5,6 @@ admin.site.register([
     models.Recipe,
     models.Ingredient,
     models.Unit,
-    models.Step
+    models.Step,
+    models.Comment
 ])
