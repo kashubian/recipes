@@ -130,11 +130,20 @@
             <div class="card">
                 <div class="card-body">
                     <strong>Add a comment:</strong>
-                    <form method="POST">
-                        {% csrf_token %}
-                        {{ form|crispy }}
-                        <button class="btn btn-success" type="submit">Add Comment</button>
-                    </form>
+                    {% if user.is_verified %}
+                        <form method="POST">
+                            {% csrf_token %}
+                            {{ form|crispy }}
+                            <button class="btn btn-success" type="submit">Add Comment</button>
+                        </form>
+
+                    {% else %}
+                        <br>
+                        <strong style="color: red;">You must be logged as verified user to leave a comment!</strong>
+                        <p>You can log in <a href="{% url 'accounts:login' %}">here.</a></p>
+
+                    {% endif %}
+                        
                 </div>
             </div>
         </div>
