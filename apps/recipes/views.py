@@ -5,8 +5,8 @@ from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseForbidden, HttpResponseRedirect
 
-from .models import Recipe, Ingredient, Step, Comment
-from .forms import RecipeForm, CommentForm
+from .models import Recipe, Ingredient, Step, Comment, Tag
+from .forms import RecipeForm, CommentForm, TagForm
 
 
 class RecipesView(generic.ListView):
@@ -103,6 +103,7 @@ class RecipeView(AddCommentView, generic.DetailView):
         context['steps_list'] = Step.objects.filter(recipe=self.object.pk)
         context['is_favorite'] = is_favorite
         context['comments_list'] = Comment.objects.filter(recipe=self.object.pk)
+        context['tags_list'] = Tag.objects.filter(tags=self.object.pk)
         return context
     
     def post(self, request, *args, **kwargs):
@@ -178,6 +179,24 @@ class DeleteRecipeView(LoginRequiredMixin, generic.edit.DeleteView):
         if obj.owner != self.request.user:
             return HttpResponseForbidden()
         return super().dispatch(request, *args, **kwargs)
+
+from django.views.generic import FormView
+class AddTagView(LoginRequiredMixin, FormView):
+
+    form_class = TagForm
+    template_name = 'recipes/add_tags.html'
+    
+    def form_valid(self, form):
+        tags = form.cleaned_data['tags']
+        recipe = get_object_or_404(Recipe, pk=self.kwargs['recipe_id'])
+        tags_list = Tag.objects.filter(pk__in=tags)
+        for tag in tags_list:
+            recipe.tags.add(tag)
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        recipe = get_object_or_404(Recipe, pk=self.kwargs['recipe_id'])
+        return reverse_lazy('recipes:recipe', kwargs={'pk': recipe.id})
 
 
 class AddIngredientView(LoginRequiredMixin, generic.edit.CreateView):

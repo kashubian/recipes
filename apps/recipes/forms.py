@@ -1,5 +1,5 @@
 from django import forms
-from .models import Recipe, Comment
+from .models import Recipe, Comment, Tag
 
 
 class RecipeForm(forms.ModelForm):
@@ -18,3 +18,9 @@ class CommentForm(forms.ModelForm):
             'content'
         ]
         
+
+class TagForm(forms.ModelForm):
+    tags = forms.ModelMultipleChoiceField(Tag.objects.all(), widget=forms.CheckboxSelectMultiple)
+    class Meta:
+        model = Tag
+        fields = ['tags']
