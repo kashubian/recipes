@@ -13,6 +13,7 @@ class RecipesView(generic.ListView):
 
     model = Recipe
     context_object_name = 'recipes'
+    paginate_by = 6
 
 
 class FavoriteRecipes(generic.ListView):
