@@ -15,6 +15,15 @@ class RecipesView(generic.ListView):
     context_object_name = 'recipes'
     paginate_by = 6
 
+    def get(self, request, *args, **kwargs):
+        title = request.GET.get('title', '')
+        self.results = Recipe.objects.filter(title__icontains=title)
+        return super().get(request, *args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context =  super().get_context_data(results=self.results, **kwargs)
+        return context
+    
 
 class FavoriteRecipes(generic.ListView):
 
