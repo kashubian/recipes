@@ -12,6 +12,7 @@ class Recipe(Timestamp):
     slug = models.SlugField(blank=True, null=True, unique=True)
     description = models.TextField(blank=True)
     favorite = models.ManyToManyField(CustomUser, related_name='favorite', blank=True)
+    tags = models.ManyToManyField('Tag', related_name='tags', blank=True)
 
     def __str__(self):
         return self.title
@@ -57,3 +58,11 @@ class Comment(Timestamp):
 
     def __str__(self):
         return self.recipe.title + " " + self.author.username
+
+
+class Tag(Timestamp):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, unique=True)
+    name = models.CharField(max_length=30)
+
+    def __str__(self):
+        return self.name

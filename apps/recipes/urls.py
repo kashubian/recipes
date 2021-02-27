@@ -18,5 +18,6 @@ urlpatterns = [
     path('<uuid:pk>/add-to-favorite/', views.add_to_favorite, name='add_to_favorite'),
     path('favorite-recipes/', views.FavoriteRecipes.as_view(), name='favorite_recipes'),
     path('<uuid:recipe_id>/comments/<uuid:pk>/update/', views.UpdateCommentView.as_view(), name='update_comment'),
-    path('<uuid:recipe_id>/comments/<uuid:pk>/delete/', views.DeleteCommentView.as_view(), name='delete_comment')
+    path('<uuid:recipe_id>/comments/<uuid:pk>/delete/', views.DeleteCommentView.as_view(), name='delete_comment'),
+    path('<uuid:recipe_id>/add-tags/', views.AddTagView.as_view(), name='add_tags')
 ]

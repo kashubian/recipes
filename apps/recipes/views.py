@@ -5,15 +5,36 @@ from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseForbidden, HttpResponseRedirect
 
-from .models import Recipe, Ingredient, Step, Comment
-from .forms import RecipeForm, CommentForm
-
+from .models import Recipe, Ingredient, Step, Comment, Tag
+from .forms import RecipeForm, CommentForm, TagForm
+from django.db.models import Q
 
 class RecipesView(generic.ListView):
 
     model = Recipe
     context_object_name = 'recipes'
     paginate_by = 6
+
+    # def get(self, request, *args, **kwargs):
+    #     title = request.GET.get('title', '')
+    #     self.results = Recipe.objects.filter(title__icontains=title)
+    #     return super().get(request, *args, **kwargs)
+
+    def get_context_data(self, *args, **kwargs):
+        context =  super().get_context_data(*args, **kwargs)
+        context['tags'] = Tag.objects.all()
+        return context
+
+    def get_queryset(self):
+        query = self.request.GET.get('q')
+        
+        if query is not None:
+            object_list = Recipe.objects.filter(Q(title__icontains=query) | Q(tags__name__icontains=query))
+            return object_list
+        
+        else:
+            recipes = Recipe.objects.all()
+            return recipes
 
 
 class FavoriteRecipes(generic.ListView):
@@ -103,6 +124,7 @@ class RecipeView(AddCommentView, generic.DetailView):
         context['steps_list'] = Step.objects.filter(recipe=self.object.pk)
         context['is_favorite'] = is_favorite
         context['comments_list'] = Comment.objects.filter(recipe=self.object.pk)
+        context['tags_list'] = Tag.objects.filter(tags=self.object.pk)
         return context
     
     def post(self, request, *args, **kwargs):
@@ -178,6 +200,24 @@ class DeleteRecipeView(LoginRequiredMixin, generic.edit.DeleteView):
         if obj.owner != self.request.user:
             return HttpResponseForbidden()
         return super().dispatch(request, *args, **kwargs)
+
+from django.views.generic import FormView
+class AddTagView(LoginRequiredMixin, FormView):
+
+    form_class = TagForm
+    template_name = 'recipes/add_tags.html'
+    
+    def form_valid(self, form):
+        tags = form.cleaned_data['tags']
+        recipe = get_object_or_404(Recipe, pk=self.kwargs['recipe_id'])
+        tags_list = Tag.objects.filter(pk__in=tags)
+        for tag in tags_list:
+            recipe.tags.add(tag)
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        recipe = get_object_or_404(Recipe, pk=self.kwargs['recipe_id'])
+        return reverse_lazy('recipes:recipe', kwargs={'pk': recipe.id})
 
 
 class AddIngredientView(LoginRequiredMixin, generic.edit.CreateView):

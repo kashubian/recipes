@@ -1,9 +1,34 @@
 {% extends "base.html" %}
 
 {% block content %}
+
+  <form action="{% url 'recipes:recipes' %}" method="GET" class="form-group">
+    <div class="row m-4">
+      
+      <div class="col-9">
+        <input type="text" class="form-control" placeholder="Enter a title" name="q">
+      </div>
+
+      <div class="col-3">
+        <button type="submit" class="btn btn-success btn-block">Search</button>
+      </div>
+
+    </div>
+
+    <div class="row m-4">
+      <div class="col">
+        <div class="form-check form-check-inline">
+        {% for tag in tags %}
+          <input class="form-check-input ml-2" type="checkbox" id="tag-input" name="q" value={{tag.name}}>
+          <label class="form-check-label" for="tag-input">{{tag.name}}</label>
+        {% endfor %}
+        </div>
+      </div>
+    </div>
+  </form>
   
-  {% if recipes %}
-    
+  {% if recipes %}   
+
     {%  for recipe in recipes  %}
         {% if forloop.counter0|divisibleby:3 %} <div class="row text-center"> {%  endif %}
           <div class="col-md-4">

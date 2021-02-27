@@ -6,5 +6,6 @@ admin.site.register([
     models.Ingredient,
     models.Unit,
     models.Step,
-    models.Comment
+    models.Comment,
+    models.Tag
 ])
