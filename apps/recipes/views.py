@@ -7,7 +7,7 @@ from django.http import HttpResponseForbidden, HttpResponseRedirect
 
 from .models import Recipe, Ingredient, Step, Comment, Tag
 from .forms import RecipeForm, CommentForm, TagForm
-
+from django.db.models import Q
 
 class RecipesView(generic.ListView):
 
@@ -15,15 +15,27 @@ class RecipesView(generic.ListView):
     context_object_name = 'recipes'
     paginate_by = 6
 
-    def get(self, request, *args, **kwargs):
-        title = request.GET.get('title', '')
-        self.results = Recipe.objects.filter(title__icontains=title)
-        return super().get(request, *args, **kwargs)
+    # def get(self, request, *args, **kwargs):
+    #     title = request.GET.get('title', '')
+    #     self.results = Recipe.objects.filter(title__icontains=title)
+    #     return super().get(request, *args, **kwargs)
 
-    def get_context_data(self, **kwargs):
-        context =  super().get_context_data(results=self.results, **kwargs)
+    def get_context_data(self, *args, **kwargs):
+        context =  super().get_context_data(*args, **kwargs)
+        context['tags'] = Tag.objects.all()
         return context
-    
+
+    def get_queryset(self):
+        query = self.request.GET.get('q')
+        
+        if query is not None:
+            object_list = Recipe.objects.filter(Q(title__icontains=query) | Q(tags__name__icontains=query))
+            return object_list
+        
+        else:
+            recipes = Recipe.objects.all()
+            return recipes
+
 
 class FavoriteRecipes(generic.ListView):
 

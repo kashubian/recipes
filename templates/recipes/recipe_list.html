@@ -5,36 +5,43 @@
   <form action="{% url 'recipes:recipes' %}" method="GET" class="form-group">
     <div class="row m-4">
       
-      <div class="col-8">
-        <input type="text" class="form-control" placeholder="Enter a title" name="title">
+      <div class="col-9">
+        <input type="text" class="form-control" placeholder="Enter a title" name="q">
       </div>
 
-      <div class="col-2">
+      <div class="col-3">
         <button type="submit" class="btn btn-success btn-block">Search</button>
       </div>
 
-      <div class="col-2">
-        <button type="submit" class="btn btn-warning btn-block">Reset</button>
-      </div>
+    </div>
 
+    <div class="row m-4">
+      <div class="col">
+        <div class="form-check form-check-inline">
+        {% for tag in tags %}
+          <input class="form-check-input ml-2" type="checkbox" id="tag-input" name="q" value={{tag.name}}>
+          <label class="form-check-label" for="tag-input">{{tag.name}}</label>
+        {% endfor %}
+        </div>
+      </div>
     </div>
   </form>
   
-  {% if results %}
-    
-    {%  for result in results  %}
+  {% if recipes %}   
+
+    {%  for recipe in recipes  %}
         {% if forloop.counter0|divisibleby:3 %} <div class="row text-center"> {%  endif %}
           <div class="col-md-4">
               <div class="card">
-                  <a href="{% url 'recipes:recipe' result.pk %}">
+                  <a href="{% url 'recipes:recipe' recipe.pk %}">
                     <img src="https://via.placeholder.com/350x150">
                   </a>
                   <div class="card-content">
                       <br>
                       {% comment %} <h4>Project {{ forloop.counter }}</h4> {% endcomment %}
-                      <h3>{{ result.title }} added by <strong>{{ result.owner }}</strong></h3>
+                      <h3>{{ recipe.title }} added by <strong>{{ recipe.owner }}</strong></h3>
                       <hr>
-                        <p>{{result.description|truncatechars:250}}</p>
+                        <p>{{recipe.description|truncatechars:250}}</p>
                       <br>
                   </div>
               </div>
