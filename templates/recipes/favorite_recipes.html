@@ -2,31 +2,50 @@
 
 {% block content %}
   
-  {% if favorite_recipes %}
-    
-    {%  for recipe in favorite_recipes  %}
-        {% if forloop.counter0|divisibleby:3 %} <div class="row text-center"> {%  endif %}
-          <div class="col-md-4">
-              <div class="card">
-                  <a href="{% url 'recipes:recipe' recipe.pk %}">
-                    <img src="https://via.placeholder.com/350x150">
-                  </a>
-                  <div class="card-content">
-                      <br>
-                      {% comment %} <h4>Project {{ forloop.counter }}</h4> {% endcomment %}
-                      <h3>{{ recipe.title }} added by <strong>{{ recipe.owner }}</strong></h3>
-                      <hr>
-                        <p>{{recipe.description|truncatechars:250}}</p>
-                      <br>
-                  </div>
-              </div>
-          </div>
-    {%  if forloop.counter|divisibleby:3 or forloop.last %}</div><hr>{%  endif %}
-    {%  endfor %}
   
-  {% else %}
-    <strong>No available recipes</strong>
+{% if favorite_recipes %}   
 
+<h3 class="mt-2">My favorites</h3>
+
+{%  for recipe in favorite_recipes  %}
+
+  <div class="card mb-3 mt-3">
+    <div class="card-body">
+      <h4 class="card-title">{{ recipe.title }}</h4>
+      {% if recipe.description %}
+        <p class="card-text">{{recipe.description|truncatechars:250}}</p>
+      {% endif %}
+      <a href="{% url 'recipes:recipe' recipe.pk %}" class="btn btn-primary float-right">Details</a>
+    </div>
+  </div>
+
+{% endfor %}
+
+
+  {% if page_obj %} 
+  <div class="d-flex justify-content-center mb-3 mt-2">
+    <span class="step-links">
+      {% if page_obj.has_previous %}
+        <a role="button" class="btn btn-secondary btn-sm" href="?page=1">first</a>
+        <a role="button" class="btn btn-primary btn-sm" href="?page={{ page_obj.previous_page_number }}">previous</a>
+      {% endif %}
+
+      <span class="current">
+        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+      </span>
+
+      {% if page_obj.has_next %}
+        <a role="button" class="btn btn-primary btn-sm" href="?page={{ page_obj.next_page_number }}">next</a>
+        <a role="button" class="btn btn-secondary btn-sm" href="?page={{ page_obj.paginator.num_pages }}">last</a>
+      {% endif %}
+    </span>
+  </div>
   {% endif %}
+
+{% else %}
+<strong>No available recipes</strong>
+
+{% endif %}
+
 
 {% endblock %}
