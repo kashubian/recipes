@@ -3,23 +3,27 @@
 
 {% block content %}
   
-    <form method="post">
+    <form method="post" class="mt-2">
         {% csrf_token %}
         <div class="row">
             <div class="col">
                 {{ form.email|as_crispy_field }}
             </div>
         </div>
+
         <div class="row">
             <div class="col">
                 {{ form.password1|as_crispy_field }}
             </div>
+        </div>
+
+        <div class="row">
             <div class="col">
                 {{ form.password2|as_crispy_field }}
             </div>
         </div>
 
-        <button type="submit" class="btn btn-success">Sign Up</button>
+        <button type="submit" class="btn btn-success float-right">Sign Up</button>
     </form>
 
 {% endblock %}
