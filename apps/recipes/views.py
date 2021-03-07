@@ -29,7 +29,7 @@ class RecipesView(generic.ListView):
         query = self.request.GET.get('q')
         
         if query is not None:
-            object_list = Recipe.objects.filter(Q(title__icontains=query) | Q(tags__name__icontains=query))
+            object_list = Recipe.objects.filter(Q(title__icontains=query) | Q(tags__slug__icontains=query))
             return object_list
         
         else:

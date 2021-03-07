@@ -63,6 +63,12 @@ class Comment(Timestamp):
 class Tag(Timestamp):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, unique=True)
     name = models.CharField(max_length=30)
+    slug = models.SlugField(null=True, blank=True, unique=True)
 
     def __str__(self):
         return self.name
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
+        
