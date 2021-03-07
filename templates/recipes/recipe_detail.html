@@ -3,159 +3,165 @@
 {% load static %}
 {% load crispy_forms_tags %}
 
-
-<div class="card">
-    <div class="card-header">
-        <p class="card-title">{{recipe.title}}</p>
-            <ul>
-                {% for tag in tags_list %}
-                <li class="badge badge-secondary">{{ tag.name }}</li>
-                {% endfor %}
-            </ul>
-            
-        {% if recipe.description %}
-        <p class="card-body">{{recipe.description}}</p>
-        {% endif %}
+<div class="row">
+    <div class="col-9 mt-3">
+        <a href="{% url 'recipes:recipes' %}" class="btn btn-primary" role="button">Back</a>
         
+        {% if request.user == recipe.owner %}
+            <a href="{% url 'recipes:update_recipe' recipe.pk %}", class="btn btn-secondary", role="button">Update</a>
+            <a href="{% url 'recipes:delete_recipe' recipe.pk %}", class="btn btn-warning", role="button">Delete</a>
+        {% endif %}
+            
+    </div>
+    <div class="col-3 mt-2">
         {% if user.is_authenticated %}
         <a href="{% url 'recipes:add_to_favorite' recipe.pk %}">  
             {% if is_favorite %}
-            <img src="{% static 'static/favorite.png' %}" alt="Remove from favorites" height="50" width="50">
+            <img src="{% static 'static/favorite.png' %}" alt="Remove from favorites" height="50" width="50" class="float-right">
             
             {% else %}
-            <img src="{% static 'static/non-favorite.png' %}" alt="Add to favorites" height="50" width="50">
+            <img src="{% static 'static/non-favorite.png' %}" alt="Add to favorites" height="50" width="50" class="float-right">
             
             {% endif %}
         </a>
         {% endif %}
-
     </div>
-
-    <div class="row">
-        <div class="col-sm-6">
-            <div class="card">
-                <div class="card-body">
-                    <strong>Ingredients:</strong>
-                    {% for ingredient in ingredients_list %}
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <a href="{% url 'recipes:update_ingredient' ingredient.pk %}">
-                                {{ ingredient.name }}
-                            </a>
-                            <span class="badge badge-secondary badge-pill">
-                                {{ ingredient.amount|default_if_none:"" }}
-                                {{ ingredient.unit|default_if_none:"" }}
-                            </span>
-                    <!-- <form method="post" action="{% url 'recipes:delete_ingredient' ingredient.pk %}">
-                    {% csrf_token %}
-                    <button class="btn btn-danger" type="submit">Delete</button>
-                    </form>  -->
-                        </li>
-                    </ul>
-                
-                    {% empty %}
-                    <p>No available ingredients</p>
-                
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
-
-        <div class="col-sm-6">
-            <div class="card">
-                <div class="card-body">
-                    <strong>Steps:</strong>
-                        {% for step in steps_list %}
-                        <ul class="list-group list-group-flush">
-                        <li class="list-group-item">
-                            <a href="{% url 'recipes:update_step' step.pk %}">
-                                {{ step.instruction }}
-                            </a>
-                            <!-- <form method="post" action="{% url 'recipes:delete_step' step.pk %}">
-                                {% csrf_token %}
-                                <button class="btn btn-danger" type="submit">Delete</button>
-                            </form> -->
-                        </li>
-                    </ul>
-            
-                    {% empty %}
-                        <p>No available steps</p>    
-                
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
-    </div>
-    
-    {% if request.user == recipe.owner %}
-    <div class="row">
-        <div class="col">
-            <div class="card-body">
-                <a href="{% url 'recipes:update_recipe' recipe.pk %}", class="btn btn-secondary", role="button">Update</a>
-                <a href="{% url 'recipes:delete_recipe' recipe.pk %}", class="btn btn-warning", role="button">Delete</a>
-                <a href="{% url 'recipes:add_ingredient' recipe.pk %}", class="btn btn-success", role="button">Add Ingredient</a>
-                <a href="{% url 'recipes:add_step' recipe.pk %}", class="btn btn-success", role="button">Add Step</a>
-                <a href="{% url 'recipes:add_tags' recipe.pk %}", class="btn btn-success", role="button">Add Tags</a>
-                <a href="{{ request.META.HTTP_REFERER }}" class="btn btn-primary" role="button">Back</a>
-            </div>
-        </div>
-    </div>
-    {% endif %}
-    
-    <div class="row">
-        
-        <div class="col-6">
-            <div class="card">
-                <div class="card-body">
-                    <strong>Comments:</strong>
-                    {% for comment in comments_list %}
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item">
-                            <small><strong>{{comment.author}}</strong> {{comment.created_at|date:"l d-m-Y H:i"}}</small>
-                            <p>{{comment.content}}</p>
-
-                            {% if user == comment.author %}
-                            <a href="{% url 'recipes:update_comment' recipe.pk comment.pk %}" role="button" class="btn btn-secondary btn-sm">Update</a>
-                            <form action="{% url 'recipes:delete_comment' recipe.pk comment.pk %}" method="POST">
-                                {% csrf_token %}
-                                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                            </form>
-                            {% endif %}
-
-                        </li>
-                    </ul>
-
-                    {% empty %}
-                    <p>No available comments</p>    
-                
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
-
-        <div class="col-6">
-            <div class="card">
-                <div class="card-body">
-                    <strong>Add a comment:</strong>
-                    {% if user.is_verified %}
-                        <form method="POST">
-                            {% csrf_token %}
-                            {{ form|crispy }}
-                            <button class="btn btn-success" type="submit">Add Comment</button>
-                        </form>
-
-                    {% else %}
-                        <br>
-                        <strong style="color: red;">You must be logged as verified user to leave a comment!</strong>
-                        <p>You can log in <a href="{% url 'accounts:login' %}">here.</a></p>
-
-                    {% endif %}
-                        
-                </div>
-            </div>
-        </div>
-
-    </div>
-
 </div>
+
+<div class="card mt-3 mb-3">
+    <div class="card-header">
+        <p class="card-title">{{recipe.title}}</p>
+        <ul>
+            {% for tag in tags_list %}
+            <li class="badge badge-secondary">{{ tag.name }}</li>
+            {% endfor %}
+        </ul>
+
+        {% if request.user == recipe.owner %}
+        <a href="{% url 'recipes:add_tags' recipe.pk %}", class="btn btn-success btn-sm", role="button">Add Tag</a>
+        {% endif %}
+
+        {% if recipe.description %}
+        <p class="card-body">{{recipe.description}}</p>
+        {% endif %}
+        
+    </div>
+</div>
+
+<div class="row">
+    <div class="col">
+        <strong>Ingredients:</strong>
+        {% for ingredient in ingredients_list %}
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                {% if request.user == recipe.owner %}
+                <a href="{% url 'recipes:update_ingredient' ingredient.pk %}">
+                    {{ ingredient.name }}
+                </a>
+
+                {% else %}
+                {{ ingredient.name }}
+
+                {% endif %}
+
+                <span class="badge badge-secondary badge-pill">
+                    {{ ingredient.amount|default_if_none:"" }}
+                    {{ ingredient.unit|default_if_none:"" }}
+                </span>
+            </li>
+        </ul>
+    
+        {% empty %}
+        <p>No available ingredients</p>
+    
+        {% endfor %}
+        
+        {% if request.user == recipe.owner %}
+        <a href="{% url 'recipes:add_ingredient' recipe.pk %}", class="btn btn-success btn-sm mt-2 mb-3", role="button">Add Ingredient</a>
+
+        {% endif %}
+                    
+    </div>
+</div>
+
+<div class="row">
+    <div class="col">
+        <strong>Steps:</strong>
+        {% for step in steps_list %}
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+                {{forloop.counter}}.
+
+                {% if request.user == recipe.owner %}
+                <a href="{% url 'recipes:update_step' step.pk %}">
+                    {{ step.instruction }}
+                </a>
+
+                {% else %}
+                {{ step.instruction }}
+
+                {% endif %}         
+
+            </li>
+        </ul>
+
+        {% empty %}
+        <p>No available steps</p>    
+    
+        {% endfor %}
+
+        {% if request.user == recipe.owner %}
+        <a href="{% url 'recipes:add_step' recipe.pk %}", class="btn btn-success btn-sm mt-2 mb-3", role="button">Add Step</a>
+        {% endif %}
+
+    </div>
+</div>
+
+<div class="row">
+    <div class="col">
+        <strong>Comments:</strong>
+        {% for comment in comments_list %}
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+                <small>{{comment.created_at|date:"l d-m-Y H:i"}}</small>
+                <br>
+                <small>{{comment.author}}</small>
+                <p>{{comment.content}}</p>
+
+                <!-- {% if user == comment.author %}
+                <a href="{% url 'recipes:update_comment' recipe.pk comment.pk %}" role="button" class="btn btn-secondary btn-sm">Update</a>
+                <form action="{% url 'recipes:delete_comment' recipe.pk comment.pk %}" method="POST">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                </form>
+                {% endif %} -->
+
+            </li>
+        </ul>
+
+        {% empty %}
+        <p>No available comments</p>    
+    
+        {% endfor %}
+    </div>
+</div>
+
+<div class="row mb-3">
+    <div class="col">
+        {% if user.is_verified %}
+        <strong>Add a comment:</strong>
+        <form method="POST">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <button class="btn btn-success float-right" type="submit">Add Comment</button>
+        </form>
+
+        {% else %}
+        <br>
+        <strong style="color: red;">You must be logged as verified user to leave a comment!</strong>
+
+        {% endif %}        
+    </div>
+</div>
+
 {% endblock %}

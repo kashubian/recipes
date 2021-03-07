@@ -14,48 +14,58 @@
     <title>Recipes</title>
   </head>
   <body>
+
+    <nav class="navbar navbar-light sticky-top" style="background-color: lightgray;">
+
+    <a class="navbar-brand" href="{% url 'recipes:recipes' %}">Recipes</a>
+
+
+    <button class="navbar-toggler toggler-example" type="button" data-toggle="collapse" data-target="#hamburger-menu"
+      aria-controls="hamburger-menu" aria-expanded="false" aria-label="Toggle navigation"><span class="dark-blue-text"><i
+          class="fas fa-bars fa-1x"></i><img src="{% static 'static/hamburger-menu.png' %}" alt=""></span></button>
+  
+
+    <div class="collapse navbar-collapse" id="hamburger-menu">
+
+        <ul class="navbar-nav mr-auto">
+          
+          {% if not user.is_authenticated %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'accounts:login' %}">Login</a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'accounts:signup' %}">Sign Up</a>
+          </li>
+
+          {% else %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'recipes:favorite_recipes' %}">My favorites</a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'recipes:add_recipe' %}">Add recipe</a>
+          </li>
+
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              {{ request.user.username }}
+            </a>
+            <div class="dropdown-menu">
+              <a class="dropdown-item" href="{% url 'accounts:change_password' %}">Change password</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href="{% url 'accounts:logout' %}">Logout</a>
+            </div>
+          </li>
+          
+          {% endif %}
+        </ul>
+
+      </div>
+
+    </nav>
+
     <div class="content container">
-        
-      <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
-          <ul class="navbar-nav">
-            
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'recipes:recipes' %}">Recipes</a>
-            </li>
-            
-            {% if not user.is_authenticated %}
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'accounts:login' %}">Login</a>
-            </li>
-
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'accounts:signup' %}">Sign Up</a>
-            </li>
-
-            {% else %}
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'recipes:favorite_recipes' %}">My favorites</a>
-            </li>
-
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'recipes:add_recipe' %}">Add recipe</a>
-            </li>
-
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                {{ request.user.username }}
-              </a>
-              <div class="dropdown-menu">
-                <a class="dropdown-item" href="{% url 'accounts:change_password' %}">Change password</a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="{% url 'accounts:logout' %}">Logout</a>
-              </div>
-            </li>
-            
-            {% endif %}
-          </ul>
-      </nav>
-
         {% block content %}
         {% endblock %}
     </div>
