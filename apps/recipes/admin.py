@@ -7,5 +7,6 @@ admin.site.register([
     models.Unit,
     models.Step,
     models.Comment,
-    models.Tag
+    models.Tag,
+    models.ShoppingList
 ])

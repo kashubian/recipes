@@ -72,3 +72,11 @@ class Tag(Timestamp):
         self.slug = slugify(self.name)
         super().save(*args, **kwargs)
         
+
+class ShoppingList(Timestamp):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, unique=True)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.user.email + " " + str(self.ingredient)
