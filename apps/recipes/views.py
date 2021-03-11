@@ -204,10 +204,16 @@ class DeleteRecipeView(OwnerMixin, generic.edit.DeleteView):
     #     return super().dispatch(request, *args, **kwargs)
 
 from django.views.generic import FormView
-class AddTagView(OwnerMixin, FormView):
+class AddTagView(FormView):
 
     form_class = TagForm
     template_name = 'recipes/add_tags.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        recipe = get_object_or_404(Recipe, pk=self.kwargs['recipe_id'])
+        if request.user != recipe.owner:
+            return HttpResponseForbidden()
+        return super().dispatch(request, *args, **kwargs)
     
     def form_valid(self, form):
         tags = form.cleaned_data['tags']
