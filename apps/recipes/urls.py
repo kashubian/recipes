@@ -19,5 +19,7 @@ urlpatterns = [
     path('favorite-recipes/', views.FavoriteRecipes.as_view(), name='favorite_recipes'),
     path('<uuid:recipe_id>/comments/<uuid:pk>/update/', views.UpdateCommentView.as_view(), name='update_comment'),
     path('<uuid:recipe_id>/comments/<uuid:pk>/delete/', views.DeleteCommentView.as_view(), name='delete_comment'),
-    path('<uuid:recipe_id>/add-tags/', views.AddTagView.as_view(), name='add_tags')
+    path('<uuid:recipe_id>/add-tags/', views.AddTagView.as_view(), name='add_tags'),
+    path('shopping-list/', views.ShoppingListView.as_view(), name='shopping_list'),
+    path('shopping-list/<uuid:pk>/delete/', views.DeleteShoppingItemView.as_view(), name='delete_shopping_item')
 ]

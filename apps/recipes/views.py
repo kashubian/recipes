@@ -6,7 +6,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponseForbidden, HttpResponseRedirect
 
 from .mixins import OwnerMixin
-from .models import Recipe, Ingredient, Step, Comment, Tag
+from .models import Recipe, Ingredient, Step, Comment, Tag, ShoppingList
 from .forms import RecipeForm, CommentForm, TagForm
 from django.db.models import Q
 
@@ -334,3 +334,15 @@ class DeleteStepView(generic.edit.DeleteView):
     def get_success_url(self):
         return reverse_lazy('recipes:recipe', kwargs={'pk': self.object.recipe_id})
         
+
+class ShoppingListView(generic.ListView):
+
+    model = ShoppingList
+    context_object_name = 'items'
+    template_name = 'recipes/shopping_list.html'
+
+
+class DeleteShoppingItemView(generic.DeleteView):
+
+    model = ShoppingList
+    success_url = '/shopping-list/'
